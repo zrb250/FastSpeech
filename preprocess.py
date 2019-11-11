@@ -31,6 +31,47 @@ def write_metadata(metadata, out_dir):
 
 def main():
     path = os.path.join("data", "LJSpeech-1.1")
+    # preprocess_ljspeech(path)
+
+    text_path = os.path.join(path, "metadata.csv")
+    texts = process_text(text_path)
+
+    if not os.path.exists(hp.alignment_path):
+        os.mkdir(hp.alignment_path)
+
+    num = 0
+    for ind, line in enumerate(texts[num:]):
+        parts = line.strip().split('|')
+        phones=parts[4]
+        # sumLen=parts[5];
+        mel_gt_name = os.path.join(
+            hp.mel_ground_truth, "ljspeech-mel-%05d.npy" % (ind+num+1))
+        mel_gt_target = np.load(mel_gt_name)
+        D = np.array(phones.split(' ')).astype(int)
+        if(ind%100 == 0):
+            print("calc number:",ind, D.sum(), parts[4], mel_gt_target.shape[0], line)
+
+        if(D.sum() > mel_gt_target.shape[0]):
+            print("phonelen error:", D.sum(), mel_gt_target.shape[0], line)
+            exit(0);
+
+        if(abs(mel_gt_target.shape[0] - D.sum()) > 3):
+            print("phonelen error:", D.sum(), mel_gt_target.shape[0], line)
+            exit(0);
+
+        if(D.sum() < mel_gt_target.shape[0]):
+            gap =  mel_gt_target.shape[0] - D.sum()
+            fron = int(gap/2);
+            end = gap - fron;
+            D[0] = D[0] + fron;
+            D[len(D) - 1 ] = D[len(D) - 1 ] + end
+
+        np.save(os.path.join(hp.alignment_path, str(
+                ind+num) + ".npy"), D, allow_pickle=False)
+
+
+def main1():
+    path = os.path.join("data", "LJSpeech-1.1")
     preprocess_ljspeech(path)
 
     text_path = os.path.join("data", "train.txt")
@@ -40,19 +81,19 @@ def main():
         os.mkdir(hp.alignment_path)
 
     tacotron2 = get_Tacotron2()
-
     num = 0
     for ind, text in enumerate(texts[num:]):
-        print(ind)
 
         character = text[0:len(text)-1]
         mel_gt_name = os.path.join(
             hp.mel_ground_truth, "ljspeech-mel-%05d.npy" % (ind+num+1))
         mel_gt_target = np.load(mel_gt_name)
+
         _, _, D = load_data(character, mel_gt_target, tacotron2)
 
         np.save(os.path.join(hp.alignment_path, str(
             ind+num) + ".npy"), D, allow_pickle=False)
+
 
 
 if __name__ == "__main__":
