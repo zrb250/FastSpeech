@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
+#import matplotlib
+#import matplotlib.pyplot as plt
 import os
 
 import Tacotron2
@@ -26,14 +26,16 @@ def get_param_num(model):
 
 
 def plot_data(data, figsize=(12, 4)):
-    _, axes = plt.subplots(1, len(data), figsize=figsize)
-    for i in range(len(data)):
-        axes[i].imshow(data[i], aspect='auto',
-                       origin='bottom', interpolation='none')
+    print("disable plot_data function!")
+    return;
+  #  _, axes = plt.subplots(1, len(data), figsize=figsize)
+   # for i in range(len(data)):
+    #    axes[i].imshow(data[i], aspect='auto',
+     #                  origin='bottom', interpolation='none')
 
-    if not os.path.exists("img"):
-        os.mkdir("img")
-    plt.savefig(os.path.join("img", "model_test.jpg"))
+   # if not os.path.exists("img"):
+    #    os.mkdir("img")
+   # plt.savefig(os.path.join("img", "model_test.jpg"))
 
 
 def get_mask_from_lengths(lengths, max_len=None):
@@ -141,7 +143,11 @@ def pad(input_ele, mel_max_length=None):
 
 
 def load_data(txt, mel, model):
+    print("load_data txt:")
+    print(txt)
     character = text.text_to_sequence(txt, hparams.text_cleaners)
+    print("character:")
+    print(character)
     character = torch.from_numpy(np.stack([np.array(character)])).long().cuda()
 
     text_length = torch.Tensor([character.size(1)]).long().cuda()

@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
-import matplotlib
-import matplotlib.pyplot as plt
+#import matplotlib
+#import matplotlib.pyplot as plt
 import numpy as np
 import time
 import os
@@ -49,7 +49,7 @@ def synthesis(model, text, alpha=1.0):
 
 if __name__ == "__main__":
     # Test
-    num = 112000
+    num = 1000000
     alpha = 1.0
     model = get_FastSpeech(num)
     words = "Let’s go out to the airport. The plane landed ten minutes ago."
@@ -71,4 +71,5 @@ if __name__ == "__main__":
     waveglow.inference.inference(torch.stack([torch.from_numpy(
         mel_tac2).cuda()]), wave_glow, os.path.join("results", "tacotron2.wav"))
 
-    utils.plot_data([mel.numpy(), mel_postnet.numpy(), mel_tac2])
+    print("synthesis completed")
+    #utils.plot_data([mel.numpy(), mel_postnet.numpy(), mel_tac2])

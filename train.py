@@ -21,6 +21,8 @@ def main(args):
     device = torch.device('cuda'if torch.cuda.is_available()else 'cpu')
 
     # Define model
+    #device_ids = [6,7];
+    #model = nn.DataParallel(FastSpeech(),device_ids=device_ids).to(device)
     model = nn.DataParallel(FastSpeech()).to(device)
     print("Model Has Been Defined")
     num_param = utils.get_param_num(model)
