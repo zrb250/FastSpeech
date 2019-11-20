@@ -1,7 +1,8 @@
 import torch
 import torch.nn as nn
-#import matplotlib
-#import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('agg')
+import matplotlib.pyplot as plt
 import numpy as np
 import time
 import os
@@ -28,7 +29,9 @@ def get_FastSpeech(num):
 
 
 def synthesis(model, text, alpha=1.0):
+    print("text:", text)
     text = np.array(text_to_sequence(text, hp.text_cleaners))
+    print("textid:", text)
     text = np.stack([text])
 
     src_pos = np.array([i+1 for i in range(text.shape[1])])
@@ -49,10 +52,12 @@ def synthesis(model, text, alpha=1.0):
 
 if __name__ == "__main__":
     # Test
-    num = 1000000
+    num = 350000
     alpha = 1.0
     model = get_FastSpeech(num)
-    words = "Let’s go out to the airport. The plane landed ten minutes ago."
+    #words = "Let’s go out to the airport. The plane landed ten minutes ago."
+    words = "IH1_B N_E B_B IY1_I IH0_I NG_E K_B AH0_I M_I P_I EH1_I R_I AH0_I T_I IH0_I V_I L_I IY0_E M_B AA1_I D_I ER0_I N_E"
+    #words = "L_B EH1_I T_I S_E G_B OW1_E AW2_B T_E T_B OW0_E TH_S EH1_B R_I P_I AO2_I R_I T_E SIL TH_S P_B L_I EY1_I N_E L_B AE1_I N_I D_I IH0_I D_E T_B EH1_I N_E M_B IH1_I N_I AH0_I T_I S_E AH0_B G_I OW2_E SIL" 
 
     mel, mel_postnet, mel_torch, mel_postnet_torch = synthesis(
         model, words, alpha=alpha)
@@ -72,4 +77,4 @@ if __name__ == "__main__":
         mel_tac2).cuda()]), wave_glow, os.path.join("results", "tacotron2.wav"))
 
     print("synthesis completed")
-    #utils.plot_data([mel.numpy(), mel_postnet.numpy(), mel_tac2])
+    utils.plot_data([mel.numpy(), mel_postnet.numpy(), mel_tac2])
