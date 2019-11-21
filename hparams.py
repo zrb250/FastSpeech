@@ -47,6 +47,6 @@ weight_decay = 1e-6
 grad_clip_thresh = 1.0
 decay_step = [500000, 1000000, 2000000]
 
-save_step = 1000
+save_step = 50000
 log_step = 5
 clear_Time = 20

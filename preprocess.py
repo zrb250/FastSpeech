@@ -31,7 +31,7 @@ def write_metadata(metadata, out_dir):
 
 def main():
     path = os.path.join("data", "LJSpeech-1.1")
-    # preprocess_ljspeech(path)
+    preprocess_ljspeech(path)
 
     text_path = os.path.join(path, "metadata.csv")
     texts = process_text(text_path)
@@ -72,7 +72,7 @@ def main():
 
 def main1():
     path = os.path.join("data", "LJSpeech-1.1")
-    preprocess_ljspeech(path)
+    #preprocess_ljspeech(path)
 
     text_path = os.path.join("data", "train.txt")
     texts = process_text(text_path)
@@ -97,4 +97,5 @@ def main1():
 
 
 if __name__ == "__main__":
-    main()
+    #main()
+    main1()

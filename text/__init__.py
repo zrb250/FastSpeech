@@ -72,7 +72,8 @@ def _symbols_to_sequence(symbols):
 
 
 def _arpabet_to_sequence(text):
-    return _symbols_to_sequence(['@' + s for s in text.strip().split(' ')])
+    #return _symbols_to_sequence(['@' + s for s in text.strip().split(' ')])
+    return _symbols_to_sequence([s for s in text.strip().split(' ')])
 
 
 def _should_keep_symbol(s):

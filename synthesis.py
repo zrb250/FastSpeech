@@ -52,7 +52,7 @@ def synthesis(model, text, alpha=1.0):
 
 if __name__ == "__main__":
     # Test
-    num = 350000
+    num = 200000
     alpha = 1.0
     model = get_FastSpeech(num)
     #words = "Let’s go out to the airport. The plane landed ten minutes ago."
