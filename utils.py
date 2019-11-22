@@ -158,8 +158,10 @@ def load_data(txt, mel, model):
     alignment = alignment[0].cpu().numpy()
     cemb = cemb[0].cpu().numpy()
 
-    plot_data((mel_tacotron2.float().data.cpu().numpy()[0],
-               alignment.float().data.cpu().numpy()[0].T), txt[:10].replace(' ', ''))
+    print("mel_tacotron2[0].cpu().numpy()",mel_tacotron2[0].cpu().numpy().shape, mel_tacotron2[0].cpu().numpy())
+    print("alignment[0].cpu().numpy()",alignment[0].cpu().numpy().shape, alignment[0].cpu().numpy())
+    plot_data((mel_tacotron2[0].cpu().numpy(),
+               alignment[0].cpu().numpy()), txt[:10].replace(' ', ''))
 
     D = get_D(alignment)
     D = np.array(D)
