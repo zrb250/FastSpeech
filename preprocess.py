@@ -84,6 +84,9 @@ def main1():
     num = 0
     for ind, text in enumerate(texts[num:]):
 
+        if(ind > 10):
+            exit(0)
+
         character = text[0:len(text)-1]
         mel_gt_name = os.path.join(
             hp.mel_ground_truth, "ljspeech-mel-%05d.npy" % (ind+num+1))

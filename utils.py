@@ -26,7 +26,7 @@ def get_param_num(model):
     return num_param
 
 
-def plot_data(data, figsize=(12, 4)):
+def plot_data(data, prename='0',  figsize=(12, 4)):
     _, axes = plt.subplots(1, len(data), figsize=figsize)
     for i in range(len(data)):
         axes[i].imshow(data[i], aspect='auto',
@@ -34,7 +34,7 @@ def plot_data(data, figsize=(12, 4)):
 
     if not os.path.exists("img"):
         os.mkdir("img")
-    plt.savefig(os.path.join("img", "model_test.jpg"))
+    plt.savefig(os.path.join("img", str(prename) + "_model_test.jpg"))
 
 
 def get_mask_from_lengths(lengths, max_len=None):
@@ -157,6 +157,9 @@ def load_data(txt, mel, model):
 
     alignment = alignment[0].cpu().numpy()
     cemb = cemb[0].cpu().numpy()
+
+    plot_data((mel_tacotron2.float().data.cpu().numpy()[0],
+               alignment.float().data.cpu().numpy()[0].T), txt[:10].replace(' ', ''))
 
     D = get_D(alignment)
     D = np.array(D)
