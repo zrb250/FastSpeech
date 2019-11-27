@@ -1,8 +1,8 @@
 import numpy as np
 import os
 
-target_frame_t = 0.046439
-target_frame_shift_t = 0.011609
+target_frame_t = 0.04644
+target_frame_shift_t = 0.01161
 
 src_frame_t = 0.025
 src_frame_shift_t = 0.010
@@ -26,6 +26,8 @@ def alignment():
         tlen = mel.shape[0]
         tlen = tlen - 4; # del padding size
         _, D, _ = get_new_align(alignInfo, targetTimeSpan, tlen);
+
+        # break;
         np.save(os.path.join(out_dir, str(index - 1) + ".npy"), D, allow_pickle=False)
         index = index + 1
 
@@ -57,27 +59,39 @@ def get_new_align(alignInfo, targetTimeSpan, tlen):
                 D[idx] = D[idx] + 1
             elif(idx < (Dlen - 1)):
                 D[idx + 1] = D[idx + 1] + 1
-                idx= idx + 1;
-                cur = next;
-                next = timeSpan[idx];
+
+                #tstart > cend, goto next phone
+                if(tframe[0] > cur[1]):
+                    idx= idx + 1;
+                    cur = timeSpan[idx];
+                    if(idx < (Dlen - 1)):
+                        next = timeSpan[idx + 1];
             else:
                 D[idx] = D[idx] + 1
                 # print("append frame:", tidx, targetTimeSpan[tidx])
 
+    # for i in range(len(alignlist)):
+    #     print(D[i], alignlist[i])
     #add padding frame to start and end
     D[0] = D[0] + 2;
     D[len(D) - 1] = D[len(D) - 1] + 2
-    # print(D, D.sum(), len(D))
+
+    # print(len(alignlist),alignInfo)
+    # dl=D.astype(str).tolist();
+    # print(len(D)," ".join(dl))
+    # print("   ")
     return  alignInfo, D, len(D)
 
 def is_cur(cur, next, tframe):
     cstart, cend = cur;
     nstart, nend = next;
     tstart, tend = tframe;
+    # print("cur, next, tframe", cur, next, tframe)
+    # if(tstart >= nend):
+    #     print("un know!!, cur, next, tframe", cur, next, tframe)
+    #     exit(0)
     if(tend <= cend):
         return True;
-    if(tstart >= cend):
-        return False;
     if((cend - tstart) > (tend - nstart)):
         return True;
     else:
@@ -100,7 +114,7 @@ def get_frame_src_time_span(laststep, frame_n):
         start = laststep - (src_frame_t - src_frame_shift_t);
     end = start + timespan
 
-    return round(start,6), round(end,6)
+    return round(start,5), round(end,5)
 
 def get_frame_target_time_span(laststep, frame_n):
     timespan = (frame_n - 1) * target_frame_shift_t + target_frame_t;
@@ -109,7 +123,7 @@ def get_frame_target_time_span(laststep, frame_n):
         start = laststep - (target_frame_t - target_frame_shift_t);
     end = start + timespan
 
-    return round(start,6), round(end,6)
+    return round(start,5), round(end,5)
 
 if __name__ == '__main__':
     alignment();
