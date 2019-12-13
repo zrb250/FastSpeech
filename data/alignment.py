@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import utils
 
 target_frame_t = 0.04644
 target_frame_shift_t = 0.01161
@@ -7,6 +8,25 @@ target_frame_shift_t = 0.01161
 src_frame_t = 0.025
 src_frame_shift_t = 0.010
 
+
+def train_txt():
+
+    out_dir = './'
+    index = 1
+    phone_align_file = './to16kList.txt.out'
+    f=open(os.path.join(out_dir, 'train.txt'), 'w', encoding='utf-8')
+    funiq=open(os.path.join(out_dir, 'train_uniq.txt'), 'w', encoding='utf-8')
+    for line in open(phone_align_file):
+        wav, txt, phones, _, alignInfo, plen = line.strip().split("$$")
+
+        ph = [x.split('_')[0] for x in phones.split(' ')]
+        f.write(phones + '\n')
+        funiq.write(' '.join(ph) + '\n')
+        index = index + 1
+        if(index % 100 == 0):
+            print("complete:", index);
+
+    return;
 
 def alignment():
 
@@ -125,5 +145,38 @@ def get_frame_target_time_span(laststep, frame_n):
 
     return round(start,5), round(end,5)
 
+def plot_alignment():
+    in_dir = '../self_alignment/alignments'
+    t2_in_dir = '../alignments'
+
+    for num in range(20):
+        fname = str(num) + ".npy";
+        a = np.load(os.path.join(in_dir, fname))
+        align = np.zeros((a.shape[0],a.sum()), dtype=float)
+
+        last = 0;
+        for i in range(len(a)):
+            num = a[i];
+            for j in range(num):
+              pos = last + j;
+              align[i][pos] = 1.0
+            last = num + last;
+
+
+        t2a = np.load(os.path.join(t2_in_dir, fname))
+        t2align = np.zeros((t2a.shape[0],t2a.sum()), dtype=float)
+        last = 0;
+        for i in range(len(t2a)):
+            num = t2a[i];
+            for j in range(num):
+                pos = last + j;
+                t2align[i][pos] = 1.0
+            last = num + last;
+
+        utils.plot_data([align, t2align], fname)
+
+
 if __name__ == '__main__':
-    alignment();
+    # alignment();
+    # train_txt()
+    plot_alignment();
